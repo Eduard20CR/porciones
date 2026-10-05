@@ -11,7 +11,6 @@ export function createDefaultSettings(): Settings {
       { id: 'harinas', name: 'Harinas', unit: 'porc.', dailyTarget: 8, step: 1 },
       { id: 'proteinas', name: 'Proteínas', unit: 'porc.', dailyTarget: 13, step: 1 },
       { id: 'grasas', name: 'Grasas', unit: 'porc.', dailyTarget: 4, step: 1 },
-      { id: 'liquidos', name: 'Líquidos', unit: 'L', dailyTarget: 3, step: 0.25 },
     ],
     meals: [
       { id: 'desayuno', name: 'Desayuno', targets: { proteinas: 3, harinas: 2, frutas: 1 } },
