@@ -5,12 +5,12 @@ export function createDefaultSettings(): Settings {
   return {
     personName: '',
     categories: [
-      { id: 'leches', name: 'Leches', unit: 'porciones', dailyTarget: 1, step: 1 },
-      { id: 'frutas', name: 'Frutas', unit: 'porciones', dailyTarget: 2, step: 1 },
-      { id: 'vegetales', name: 'Vegetales', unit: 'porciones', dailyTarget: 3, step: 1 },
-      { id: 'harinas', name: 'Harinas', unit: 'porciones', dailyTarget: 8, step: 1 },
-      { id: 'proteinas', name: 'Proteínas', unit: 'porciones', dailyTarget: 13, step: 1 },
-      { id: 'grasas', name: 'Grasas', unit: 'porciones', dailyTarget: 4, step: 1 },
+      { id: 'leches', name: 'Leches', unit: 'porc.', dailyTarget: 1, step: 1 },
+      { id: 'frutas', name: 'Frutas', unit: 'porc.', dailyTarget: 2, step: 1 },
+      { id: 'vegetales', name: 'Vegetales', unit: 'porc.', dailyTarget: 3, step: 1 },
+      { id: 'harinas', name: 'Harinas', unit: 'porc.', dailyTarget: 8, step: 1 },
+      { id: 'proteinas', name: 'Proteínas', unit: 'porc.', dailyTarget: 13, step: 1 },
+      { id: 'grasas', name: 'Grasas', unit: 'porc.', dailyTarget: 4, step: 1 },
       { id: 'liquidos', name: 'Líquidos', unit: 'L', dailyTarget: 3, step: 0.25 },
     ],
     meals: [

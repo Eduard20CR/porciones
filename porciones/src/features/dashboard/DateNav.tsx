@@ -17,7 +17,7 @@ export function DateNav({ date, onChange }: DateNavProps) {
       </NavButton>
 
       <div className="flex flex-col items-center text-center">
-        <span className="font-medium text-slate-900 first-letter:uppercase">{formatDateKey(date)}</span>
+        <span aria-live="polite" className="font-medium text-slate-900 first-letter:uppercase">{formatDateKey(date)}</span>
         {isToday ? (
           <span className="text-xs text-slate-500">Hoy</span>
         ) : (

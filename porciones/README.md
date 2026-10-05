@@ -1,32 +1,56 @@
-# React + TypeScript + Vite
+# Porciones
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Tracker de porciones diarias basado en un plan nutricional. Cada comida tiene un objetivo por categoría
+(proteínas, harinas, líquidos…) y se registra lo que realmente se consumió. El resumen diario se calcula
+sumando todas las comidas.
 
-Currently, two official plugins are available:
+Sin backend: la configuración y los registros se guardan en `localStorage`. Los registros de más de 30 días
+se eliminan al abrir la app.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Scripts
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev         # servidor de desarrollo
+npm test            # tests (vitest)
+npm run lint        # oxlint
+npm run build       # typecheck + build de producción
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Stack
+
+React 19 · TypeScript · Vite · Zustand (`persist`) · Tailwind CSS v4 · Vitest
+
+## Arquitectura
+
+Las dependencias van en un solo sentido: **UI → store → domain**.
+
+```
+src/
+  domain/      Tipos y funciones puras (totales, fechas, retención, edición inmutable). Sin React ni Zustand.
+  store/       Un store de Zustand con persistencia en localStorage. Las acciones delegan en domain/.
+  components/  UI genérica sin lógica de negocio (Card, Stepper, ProgressBar…).
+  features/
+    dashboard/ Navegación de fecha, resumen diario y tarjetas de comida.
+    settings/  Nombre, categorías y comidas.
+```
+
+Principios:
+
+- **Solo se guardan datos fuente**: la configuración y el consumo por fecha → comida → categoría.
+  Los totales y el progreso se calculan al renderizar (`domain/totals.ts`).
+- **Los valores 0 no se guardan**, y los IDs de categorías o comidas eliminadas se ignoran al calcular.
+- **Las fechas son locales** (`YYYY-MM-DD`), nunca `toISOString()`, que usa UTC.
+- La fecha seleccionada y la vista actual son estado local de React, no global.
+
+## Modelo de datos
+
+```ts
+Settings = { personName, categories: Category[], meals: Meal[] }
+Category = { id, name, unit, dailyTarget, step }
+Meal     = { id, name, targets: { [categoryId]: number } }
+Logs     = { [date]: { meals: { [mealId]: { [categoryId]: number } } } }
+```
+
+Se persiste en `localStorage` con la clave `porciones` (`version: 1`). Si el esquema cambia, sube la versión y
+añade `migrate` en `src/store/useAppStore.ts`.

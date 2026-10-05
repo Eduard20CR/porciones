@@ -1,5 +1,13 @@
 @import 'tailwindcss';
 
+@layer base {
+  button:focus-visible,
+  select:focus-visible {
+    outline: 2px solid var(--color-brand-500);
+    outline-offset: 2px;
+  }
+}
+
 @theme {
   --color-brand-50: oklch(0.97 0.02 155);
   --color-brand-500: oklch(0.65 0.15 155);

@@ -23,7 +23,7 @@ function App() {
       </header>
 
       <main className="mx-auto max-w-2xl px-4 py-6">
-        {view === 'dashboard' ? <Dashboard /> : <Settings />}
+        {view === 'dashboard' ? <Dashboard onOpenSettings={() => setView('settings')} /> : <Settings />}
       </main>
     </div>
   )

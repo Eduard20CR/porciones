@@ -1,3 +1,4 @@
+import { Card } from '../../components/Card'
 import { ProgressBar } from '../../components/ProgressBar'
 import { formatQuantity } from '../../domain/quantity'
 import { getProgress } from '../../domain/totals'
@@ -10,7 +11,7 @@ interface DailySummaryProps {
 
 export function DailySummary({ categories, totals }: DailySummaryProps) {
   return (
-    <section className="rounded-2xl bg-white p-4 shadow-sm ring-1 ring-slate-200">
+    <Card>
       <h2 className="mb-3 text-sm font-semibold tracking-wide text-slate-500 uppercase">Resumen del día</h2>
       <ul className="space-y-3">
         {categories.map((category) => {
@@ -24,11 +25,15 @@ export function DailySummary({ categories, totals }: DailySummaryProps) {
                   <span className="text-xs text-slate-400">{category.unit}</span>
                 </span>
               </div>
-              <ProgressBar progress={getProgress(consumed, category.dailyTarget)} label={category.name} />
+              <ProgressBar
+                progress={getProgress(consumed, category.dailyTarget)}
+                label={category.name}
+                valueText={`${formatQuantity(consumed)} de ${formatQuantity(category.dailyTarget)} ${category.unit}`}
+              />
             </li>
           )
         })}
       </ul>
-    </section>
+    </Card>
   )
 }

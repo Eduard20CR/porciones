@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { formatQuantity, normalizeQuantity } from './quantity'
+import { formatQuantity, normalizeQuantity, parseQuantity } from './quantity'
 
 describe('normalizeQuantity', () => {
   it('no permite negativos', () => {
@@ -23,5 +23,25 @@ describe('formatQuantity', () => {
   it('usa coma decimal y omite decimales innecesarios', () => {
     expect(formatQuantity(0.75)).toBe('0,75')
     expect(formatQuantity(13)).toBe('13')
+  })
+})
+
+describe('parseQuantity', () => {
+  it('acepta coma o punto decimal', () => {
+    expect(parseQuantity('1,5')).toBe(1.5)
+    expect(parseQuantity(' 2.25 ')).toBe(2.25)
+  })
+
+  it('vacío es 0 y texto inválido es null', () => {
+    expect(parseQuantity('')).toBe(0)
+    expect(parseQuantity('abc')).toBeNull()
+  })
+})
+
+describe('formatQuantity + parseQuantity', () => {
+  it('ida y vuelta sin perder valores grandes o decimales', () => {
+    for (const value of [0, 0.25, 1.5, 13, 10000, 12345.678]) {
+      expect(parseQuantity(formatQuantity(value))).toBe(value)
+    }
   })
 })

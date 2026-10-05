@@ -7,6 +7,7 @@ import { purgeOldLogs } from '../domain/retention'
 import {
   createCategory,
   createMeal,
+  moveById,
   sanitizeCategory,
   withMealTarget,
   withoutCategory,
@@ -24,9 +25,11 @@ interface Actions {
   addCategory: () => void
   updateCategory: (id: Id, patch: Partial<Omit<Category, 'id'>>) => void
   removeCategory: (id: Id) => void
+  moveCategory: (id: Id, offset: -1 | 1) => void
   addMeal: () => void
   renameMeal: (id: Id, name: string) => void
   removeMeal: (id: Id) => void
+  moveMeal: (id: Id, offset: -1 | 1) => void
   setMealTarget: (mealId: Id, categoryId: Id, value: number) => void
 }
 
@@ -61,6 +64,12 @@ export const useAppStore = create<PersistedState & Actions>()(
 
         removeCategory: (id) => updateSettings((settings) => withoutCategory(settings, id)),
 
+        moveCategory: (id, offset) =>
+          updateSettings((settings) => ({
+            ...settings,
+            categories: moveById(settings.categories, id, offset),
+          })),
+
         addMeal: () =>
           updateSettings((settings) => ({ ...settings, meals: [...settings.meals, createMeal()] })),
 
@@ -75,6 +84,9 @@ export const useAppStore = create<PersistedState & Actions>()(
             ...settings,
             meals: settings.meals.filter((meal) => meal.id !== id),
           })),
+
+        moveMeal: (id, offset) =>
+          updateSettings((settings) => ({ ...settings, meals: moveById(settings.meals, id, offset) })),
 
         setMealTarget: (mealId, categoryId, value) =>
           updateSettings((settings) => withMealTarget(settings, mealId, categoryId, value)),
