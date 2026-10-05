@@ -15,13 +15,13 @@ describe('getDailyTotals', () => {
   it('suma el consumo de todas las comidas', () => {
     const log: DayLog = {
       meals: {
-        desayuno: { proteinas: 3, liquidos: 0.5 },
-        almuerzo: { proteinas: 5, liquidos: 0.25 },
+        desayuno: { proteinas: 3, harinas: 2 },
+        almuerzo: { proteinas: 5, harinas: 1 },
       },
     }
     const totals = getDailyTotals(settings, log)
     expect(totals.proteinas).toBe(8)
-    expect(totals.liquidos).toBe(0.75)
+    expect(totals.harinas).toBe(3)
     expect(totals.frutas).toBe(0)
   })
 

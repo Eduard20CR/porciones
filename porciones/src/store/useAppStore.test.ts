@@ -27,7 +27,7 @@ describe('useAppStore (persistencia)', () => {
   it('arranca con el plan por defecto si no hay nada guardado', async () => {
     stubLocalStorage()
     const store = await loadStore()
-    expect(store.getState().settings.categories).toHaveLength(7)
+    expect(store.getState().settings.categories).toHaveLength(6)
     expect(store.getState().logs).toEqual({})
   })
 

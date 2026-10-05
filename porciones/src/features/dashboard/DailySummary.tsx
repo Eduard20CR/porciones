@@ -1,4 +1,6 @@
+import { useState } from 'react'
 import { Card } from '../../components/Card'
+import { ImageViewer } from '../../components/ImageViewer'
 import { ProgressBar } from '../../components/ProgressBar'
 import { formatQuantity } from '../../domain/quantity'
 import { getProgress } from '../../domain/totals'
@@ -10,6 +12,8 @@ interface DailySummaryProps {
 }
 
 export function DailySummary({ categories, totals }: DailySummaryProps) {
+  const [showExchanges, setShowExchanges] = useState(false)
+
   return (
     <Card>
       <h2 className="mb-3 text-sm font-semibold tracking-wide text-slate-500 uppercase">Resumen del día</h2>
@@ -34,6 +38,23 @@ export function DailySummary({ categories, totals }: DailySummaryProps) {
           )
         })}
       </ul>
+      <div className="mt-3 flex justify-end">
+        <button
+          type="button"
+          onClick={() => setShowExchanges(true)}
+          className="rounded-lg px-3 py-1.5 text-sm font-medium text-brand-600 hover:bg-brand-50"
+        >
+          Intercambios
+        </button>
+      </div>
+      {showExchanges && (
+        <ImageViewer
+          src="/intercambios.jpg"
+          alt="Tabla de intercambios"
+          title="Intercambios"
+          onClose={() => setShowExchanges(false)}
+        />
+      )}
     </Card>
   )
 }
