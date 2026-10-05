@@ -1,49 +1,98 @@
 # Porciones
 
-Tracker de porciones diarias basado en un plan nutricional. Cada comida tiene un objetivo por categoría
-(proteínas, harinas, líquidos…) y se registra lo que realmente se consumió. El resumen diario se calcula
-sumando todas las comidas.
+**Live app:** https://porciones-dieta.netlify.app/
 
-Sin backend: la configuración y los registros se guardan en `localStorage`. Los registros de más de 30 días
-se eliminan al abrir la app.
+A daily portion tracker for people following a portion-based nutrition plan ("1 milk, 2 fruits, 8 starches…").
+You set a daily target for each food group and split it across your meals. Then you log what you actually ate,
+and the app shows how close you are to each target.
 
-## Scripts
+The app runs entirely in the browser. There are no accounts and no server, and your data stays on your device.
+The interface is in Spanish.
+
+## Features
+
+### Daily dashboard
+
+- **Daily summary**: one progress bar per food group, showing consumed vs. daily target (e.g. `5 / 8 porc.`).
+  It is the sum of all meals of the day.
+- **Meal cards**: each meal lists the categories planned for it with their target, plus a − / + stepper
+  to log what you ate.
+  - A ✓ appears when you hit a meal's target exactly. The text turns amber when you go over it.
+  - **+ Añadir categoría** lets you log something you didn't plan for that meal.
+- **Date navigation**: move to the previous or next day, or jump back to today, to review or fix past entries.
+
+### Settings
+
+- **Your name**, shown as a greeting on the dashboard.
+- **Categories** (food groups): name, unit (`porc.`, `L`, `g`…), daily target, and stepper increment
+  (e.g. `1` for portions, `0.25` for liters). Categories can be reordered and deleted.
+  A warning appears when a category's meal targets don't add up to its daily target.
+- **Meals**: name and per-category target for each meal. Meals can be added, reordered and deleted.
+
+### Data and privacy
+
+- Everything is saved automatically in the browser's `localStorage`. Nothing is sent anywhere.
+- Logs older than **30 days** are deleted when the app opens.
+- Data is per browser and per device. Clearing site data resets the app to the default plan.
+
+### Default plan
+
+New users start with an example plan that they can edit in Settings:
+
+| Category  | Daily target |
+| --------- | ------------ |
+| Leches    | 1 porc.      |
+| Frutas    | 2 porc.      |
+| Vegetales | 3 porc.      |
+| Harinas   | 8 porc.      |
+| Proteínas | 13 porc.     |
+| Grasas    | 4 porc.      |
+| Líquidos  | 3 L          |
+
+The default meals are Desayuno, Almuerzo, Merienda and Cena. The plan is defined in `src/domain/defaults.ts`.
+
+## Getting started
+
+Requires Node.js and npm.
 
 ```bash
 npm install
-npm run dev         # servidor de desarrollo
-npm test            # tests (vitest)
-npm run lint        # oxlint
-npm run build       # typecheck + build de producción
+npm run dev          # start the dev server
+npm test             # run tests once (Vitest)
+npm run test:watch   # tests in watch mode
+npm run lint         # lint (oxlint)
+npm run build        # typecheck + production build into dist/
+npm run preview      # serve the production build locally
 ```
 
-## Stack
+## Tech stack
 
-React 19 · TypeScript · Vite · Zustand (`persist`) · Tailwind CSS v4 · Vitest
+React 19 · TypeScript · Vite · Zustand (with `persist`) · Tailwind CSS v4 · Vitest · oxlint
 
-## Arquitectura
+## Architecture
 
-Las dependencias van en un solo sentido: **UI → store → domain**.
+Dependencies flow in one direction: **UI → store → domain**.
 
 ```
 src/
-  domain/      Tipos y funciones puras (totales, fechas, retención, edición inmutable). Sin React ni Zustand.
-  store/       Un store de Zustand con persistencia en localStorage. Las acciones delegan en domain/.
-  components/  UI genérica sin lógica de negocio (Card, Stepper, ProgressBar…).
+  domain/      Types and pure functions (totals, dates, retention, immutable edits). No React or Zustand.
+  store/       A single Zustand store persisted to localStorage. Actions delegate to domain/.
+  components/  Generic UI with no business logic (Card, Stepper, ProgressBar…).
   features/
-    dashboard/ Navegación de fecha, resumen diario y tarjetas de comida.
-    settings/  Nombre, categorías y comidas.
+    dashboard/ Date navigation, daily summary and meal cards.
+    settings/  Name, categories and meals.
 ```
 
-Principios:
+Design principles:
 
-- **Solo se guardan datos fuente**: la configuración y el consumo por fecha → comida → categoría.
-  Los totales y el progreso se calculan al renderizar (`domain/totals.ts`).
-- **Los valores 0 no se guardan**, y los IDs de categorías o comidas eliminadas se ignoran al calcular.
-- **Las fechas son locales** (`YYYY-MM-DD`), nunca `toISOString()`, que usa UTC.
-- La fecha seleccionada y la vista actual son estado local de React, no global.
+- **Only source data is stored**: the settings, and consumption by date → meal → category.
+  Totals and progress are computed at render time (`domain/totals.ts`).
+- **Zero values are never stored.** IDs of deleted categories or meals that remain in old logs are ignored
+  when computing totals.
+- **Dates are local** (`YYYY-MM-DD`). Never use `toISOString()`, which uses UTC.
+- The selected date and the current view are local React state, not global state.
 
-## Modelo de datos
+## Data model
 
 ```ts
 Settings = { personName, categories: Category[], meals: Meal[] }
@@ -52,5 +101,5 @@ Meal     = { id, name, targets: { [categoryId]: number } }
 Logs     = { [date]: { meals: { [mealId]: { [categoryId]: number } } } }
 ```
 
-Se persiste en `localStorage` con la clave `porciones` (`version: 1`). Si el esquema cambia, sube la versión y
-añade `migrate` en `src/store/useAppStore.ts`.
+State is persisted in `localStorage` under the key `porciones` (`version: 1`). If the schema changes, bump the
+version and add a `migrate` function in `src/store/useAppStore.ts`.
