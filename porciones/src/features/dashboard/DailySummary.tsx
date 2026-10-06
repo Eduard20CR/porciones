@@ -49,7 +49,7 @@ export function DailySummary({ categories, totals }: DailySummaryProps) {
       </div>
       {showExchanges && (
         <ImageViewer
-          src="/intercambios.jpg"
+          src="/intercambios.webp"
           alt="Tabla de intercambios"
           title="Intercambios"
           onClose={() => setShowExchanges(false)}
