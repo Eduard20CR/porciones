@@ -5,9 +5,9 @@ import type { Logs } from './types'
 const day = { meals: {} }
 
 describe('purgeOldLogs', () => {
-  it('borra los registros de más de 30 días', () => {
-    const logs: Logs = { '2026-08-01': day, '2026-09-04': day, '2026-09-05': day, '2026-10-05': day }
-    expect(Object.keys(purgeOldLogs(logs, '2026-10-05'))).toEqual(['2026-09-05', '2026-10-05'])
+  it('borra los registros de más de 365 días', () => {
+    const logs: Logs = { '2025-08-01': day, '2025-10-04': day, '2025-10-05': day, '2026-10-05': day }
+    expect(Object.keys(purgeOldLogs(logs, '2026-10-05'))).toEqual(['2025-10-05', '2026-10-05'])
   })
 
   it('conserva fechas futuras', () => {

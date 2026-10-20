@@ -42,7 +42,7 @@ Dependencies flow one way: **UI (`features/`, `components/`) → `store/` → `d
 
 ### Persistence
 
-The `localStorage` key is `porciones`, with `version: 1`. `partialize` saves only `{ settings, logs }`. `merge` purges logs older than 30 days (`RETENTION_DAYS`) on hydration. If the persisted schema changes, bump `version` and add a `migrate` in `useAppStore.ts`.
+The `localStorage` key is `porciones`, with `version: 1`. `partialize` saves only `{ settings, logs }`. `merge` purges logs older than 365 days (`RETENTION_DAYS`) on hydration. If the persisted schema changes, bump `version` and add a `migrate` in `useAppStore.ts`.
 
 Store tests (`useAppStore.test.ts`) stub `window.localStorage` with `vi.stubGlobal`. They re-import the store after `vi.resetModules()` so each test hydrates from fresh storage. Follow the same pattern when testing persistence.
 

@@ -32,7 +32,7 @@ The interface is in Spanish.
 ### Data and privacy
 
 - Everything is saved automatically in the browser's `localStorage`. Nothing is sent anywhere.
-- Logs older than **30 days** are deleted when the app opens.
+- Logs older than **365 days** are deleted when the app opens.
 - Data is per browser and per device. Clearing site data resets the app to the default plan.
 
 ### Default plan

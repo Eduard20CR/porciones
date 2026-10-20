@@ -1,7 +1,7 @@
 import { addDays } from './date'
 import type { DateKey, Logs } from './types'
 
-export const RETENTION_DAYS = 30
+export const RETENTION_DAYS = 365
 
 /**
  * Elimina los registros con más de `days` días de antigüedad respecto a `today`.

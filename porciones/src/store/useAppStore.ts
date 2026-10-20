@@ -97,7 +97,7 @@ export const useAppStore = create<PersistedState & Actions>()(
       version: 1,
       // Solo se guardan los datos fuente; los totales se calculan en la UI.
       partialize: ({ settings, logs }): PersistedState => ({ settings, logs }),
-      // Al cargar desde LocalStorage se purgan los registros de más de 30 días.
+      // Al cargar desde LocalStorage se purgan los registros de más de 365 días.
       merge: (persisted, current) => {
         const stored = persisted as Partial<PersistedState>
         return {

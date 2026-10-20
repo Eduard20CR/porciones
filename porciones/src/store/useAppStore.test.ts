@@ -42,9 +42,9 @@ describe('useAppStore (persistencia)', () => {
     expect(saved.state.logs[todayKey()].meals.desayuno.proteinas).toBe(2)
   })
 
-  it('al hidratar purga los registros de más de 30 días', async () => {
+  it('al hidratar purga los registros de más de 365 días', async () => {
     const today = todayKey()
-    const old = addDays(today, -40)
+    const old = addDays(today, -400)
     const day = { meals: { desayuno: { proteinas: 1 } } }
     stubLocalStorage({
       porciones: JSON.stringify({ version: 1, state: { logs: { [old]: day, [today]: day } } }),
