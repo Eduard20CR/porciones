@@ -1,5 +1,16 @@
 import { normalizeQuantity } from './quantity'
-import type { DateKey, Id, Logs } from './types'
+import type { DateKey, DayLog, Id, Logs } from './types'
+
+export const NOTE_MAX_LENGTH = 500
+
+/** Guarda el día solo si tiene algo (consumo o nota); si no, lo elimina. */
+function withDay(logs: Logs, date: DateKey, day: DayLog): Logs {
+  const next = { ...logs }
+  const hasMeals = Object.keys(day.meals).length > 0
+  if (!hasMeals && !day.note) delete next[date]
+  else next[date] = day.note ? day : { meals: day.meals }
+  return next
+}
 
 /**
  * Devuelve unos logs nuevos con el consumo actualizado.
@@ -22,8 +33,14 @@ export function withConsumption(
   if (Object.keys(meal).length === 0) delete meals[mealId]
   else meals[mealId] = meal
 
-  const next = { ...logs }
-  if (Object.keys(meals).length === 0) delete next[date]
-  else next[date] = { meals }
-  return next
+  return withDay(logs, date, { meals, note: logs[date]?.note })
+}
+
+/**
+ * Devuelve unos logs nuevos con la nota del día actualizada.
+ * La nota se recorta y limita a `NOTE_MAX_LENGTH`; una nota vacía se elimina.
+ */
+export function withNote(logs: Logs, date: DateKey, note: string): Logs {
+  const trimmed = note.trim().slice(0, NOTE_MAX_LENGTH)
+  return withDay(logs, date, { meals: { ...logs[date]?.meals }, note: trimmed || undefined })
 }

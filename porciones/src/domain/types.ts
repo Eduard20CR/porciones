@@ -32,6 +32,8 @@ export type MealConsumption = Record<Id, number>
 export interface DayLog {
   /** mealId -> consumo real de esa comida. */
   meals: Record<Id, MealConsumption>
+  /** Comentario libre del día. Se omite si está vacío. */
+  note?: string
 }
 
 export type Logs = Record<DateKey, DayLog>
