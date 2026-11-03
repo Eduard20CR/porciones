@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import { todayKey } from '../domain/date'
 import { createDefaultSettings } from '../domain/defaults'
-import { withConsumption } from '../domain/logs'
+import { withConsumption, withNote } from '../domain/logs'
 import { purgeOldLogs } from '../domain/retention'
 import {
   createCategory,
@@ -21,6 +21,7 @@ interface PersistedState {
 
 interface Actions {
   setConsumption: (date: DateKey, mealId: Id, categoryId: Id, value: number) => void
+  setNote: (date: DateKey, note: string) => void
   setPersonName: (name: string) => void
   addCategory: () => void
   updateCategory: (id: Id, patch: Partial<Omit<Category, 'id'>>) => void
@@ -45,6 +46,8 @@ export const useAppStore = create<PersistedState & Actions>()(
 
         setConsumption: (date, mealId, categoryId, value) =>
           set((state) => ({ logs: withConsumption(state.logs, date, mealId, categoryId, value) })),
+
+        setNote: (date, note) => set((state) => ({ logs: withNote(state.logs, date, note) })),
 
         setPersonName: (personName) => updateSettings((settings) => ({ ...settings, personName })),
 

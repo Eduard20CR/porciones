@@ -5,14 +5,19 @@ import { ProgressBar } from '../../components/ProgressBar'
 import { formatQuantity } from '../../domain/quantity'
 import { getProgress } from '../../domain/totals'
 import type { Category, Id } from '../../domain/types'
+import { NoteDialog } from './NoteDialog'
 
 interface DailySummaryProps {
   categories: Category[]
   totals: Record<Id, number>
+  note: string
+  dateLabel: string
+  onNoteChange: (note: string) => void
 }
 
-export function DailySummary({ categories, totals }: DailySummaryProps) {
+export function DailySummary({ categories, totals, note, dateLabel, onNoteChange }: DailySummaryProps) {
   const [showExchanges, setShowExchanges] = useState(false)
+  const [showNote, setShowNote] = useState(false)
 
   return (
     <Card>
@@ -38,7 +43,25 @@ export function DailySummary({ categories, totals }: DailySummaryProps) {
           )
         })}
       </ul>
-      <div className="mt-3 flex justify-end">
+      {note && (
+        <button
+          type="button"
+          onClick={() => setShowNote(true)}
+          title="Editar nota"
+          className="mt-4 block w-full rounded-xl border-l-4 border-brand-500 bg-brand-50 px-3 py-2 text-left text-sm whitespace-pre-line text-slate-700 hover:brightness-[0.98]"
+        >
+          <span aria-hidden className="mr-1">📝</span>
+          {note}
+        </button>
+      )}
+      <div className="mt-3 flex justify-end gap-1">
+        <button
+          type="button"
+          onClick={() => setShowNote(true)}
+          className="rounded-lg px-3 py-1.5 text-sm font-medium text-brand-600 hover:bg-brand-50"
+        >
+          {note ? 'Editar nota' : 'Añadir nota'}
+        </button>
         <button
           type="button"
           onClick={() => setShowExchanges(true)}
@@ -53,6 +76,14 @@ export function DailySummary({ categories, totals }: DailySummaryProps) {
           alt="Tabla de intercambios"
           title="Intercambios"
           onClose={() => setShowExchanges(false)}
+        />
+      )}
+      {showNote && (
+        <NoteDialog
+          dateLabel={dateLabel}
+          initialNote={note}
+          onSave={onNoteChange}
+          onClose={() => setShowNote(false)}
         />
       )}
     </Card>

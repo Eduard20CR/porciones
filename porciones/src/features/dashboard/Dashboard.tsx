@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Card } from '../../components/Card'
-import { todayKey } from '../../domain/date'
+import { formatDateKey, todayKey } from '../../domain/date'
 import { getDailyTotals } from '../../domain/totals'
 import { useAppStore } from '../../store/useAppStore'
 import { DailySummary } from './DailySummary'
@@ -16,6 +16,7 @@ export function Dashboard({ onOpenSettings }: DashboardProps) {
   const settings = useAppStore((state) => state.settings)
   const dayLog = useAppStore((state) => state.logs[date])
   const setConsumption = useAppStore((state) => state.setConsumption)
+  const setNote = useAppStore((state) => state.setNote)
 
   const totals = useMemo(() => getDailyTotals(settings, dayLog), [settings, dayLog])
 
@@ -42,7 +43,15 @@ export function Dashboard({ onOpenSettings }: DashboardProps) {
           </button>
         </Card>
       ) : (
-        <DailySummary categories={settings.categories} totals={totals} />
+        <DailySummary
+          // La fecha en la key cierra el diálogo de la nota al cambiar de día.
+          key={date}
+          categories={settings.categories}
+          totals={totals}
+          note={dayLog?.note ?? ''}
+          dateLabel={formatDateKey(date)}
+          onNoteChange={(note) => setNote(date, note)}
+        />
       )}
 
       <div className="space-y-4">

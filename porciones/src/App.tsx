@@ -22,7 +22,8 @@ function App() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-2xl px-4 py-6">
+      {/* pb-24 deja espacio para el botón flotante de Netlify y no tapa el contenido */}
+      <main className="mx-auto max-w-2xl px-4 pt-6 pb-24">
         {view === 'dashboard' ? <Dashboard onOpenSettings={() => setView('settings')} /> : <Settings />}
       </main>
     </div>
